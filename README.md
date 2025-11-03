@@ -3,20 +3,34 @@ Machine learning model for medical costs
 
 # Analysis of Medical Insurance Costs
 
-## Introduction and Objective
+## Objective
 
 This notebook analyzes the "Medical Cost Personal Datasets" to explore factors influencing individual medical insurance costs. The objective is to identify patterns and insights that can inform pricing strategies and risk assessment in the health insurance sector.
 
-## Data Loading and Initial Exploration
+## Environment
+The analysis was done using Google Colab with a CPU runtime (non-local)
 
-The dataset was loaded into a pandas DataFrame. Initial checks confirmed that there were no missing values. The dataset includes features such as age, sex, BMI, number of children, smoking status, region, and the target variable, medical charges.
+### Data Loading and Initial Exploration
 
-## Exploratory Data Analysis (EDA)
+The dataset was loaded into a pandas DataFrame. Initial checks confirmed that there were no missing values.
+
+## Data Schema
+The dataset includes the following features:
+1. Age - data type - Integer
+2. Sex - data type - Object (male / female)
+3. BMI - data type - Float
+4. Children - data type - Integer
+5. Smoker - data type - Object (yes / no)
+6. Region - data type - Object (southeast / southwest / northeast / northwest)
+7. Charges - data type - Float (the target feature)
+
+### Exploratory Data Analysis (EDA)
 
 Comprehensive EDA was performed to understand variable distributions and relationships with medical charges:
 
 *   **Age:** A general positive correlation was observed, with charges tending to increase with age. Scatter plots revealed distinct bands, particularly when considering smoking status.
-*   **Smoking Status:** Smoking was found to be the most significant factor influencing charges, with smokers having substantially higher mean charges than non-smokers (statistically significant difference confirmed by t-test, p < 0.001).
+*   **Smoking Status:** Smoking was found to be the most significant factor influencing charges, with smokers having substantially higher mean charges than non-smokers (statistically significant difference
+    confirmed by t-test, p < 0.001).
 *   **Sex:** A small but statistically significant difference in mean charges was observed between males and females (females having slightly lower mean charges, p < 0.05).
 *   **BMI:** A weak but statistically significant positive correlation was found between BMI and charges (correlation coefficient ≈ 0.2, p < 0.001).
 *   **Number of Children:** ANOVA test indicated a statistically significant difference in mean charges across different numbers of children (p < 0.05).
@@ -24,7 +38,7 @@ Comprehensive EDA was performed to understand variable distributions and relatio
 
 Multivariate analysis, particularly focusing on age and smoking status, highlighted the strong impact of smoking on charges across all age groups.
 
-## Data Preprocessing
+### Data Preprocessing
 
 Data preprocessing involved:
 
@@ -34,7 +48,7 @@ Data preprocessing involved:
     *   One-Hot Encoding for the categorical feature (`region`).
     *   Standard Scaling for numerical features (`age`, `bmi`, `children`).
 
-## Model Building and Evaluation
+### Model Building and Evaluation
 
 Several regression models were evaluated using a pipeline that included the preprocessing steps. The models assessed were:
 
@@ -48,7 +62,7 @@ Several regression models were evaluated using a pipeline that included the prep
 
 Initial evaluation on the test set using R2, MAE, and MSE metrics showed that the **Random Forest Regressor** and **XGBoost Regressor** performed best, with Random Forest having slightly better scores across the board (R2 ≈ 0.86, MAE ≈ 2550).
 
-## Model Tuning and Selection
+### Model Tuning and Selection
 
 Hyperparameter tuning was performed on the best-performing model, the Random Forest Regressor, using `GridSearchCV` with a focus on optimizing the Mean Absolute Error (using negative MAE scoring).
 
@@ -65,7 +79,7 @@ Evaluating the tuned Random Forest model on the test set yielded improved perfor
 
 The tuned Random Forest model demonstrates a strong ability to predict medical charges based on the provided features.
 
-## Feature Importance
+### Feature Importance
 
 Analysis of the feature importances from the tuned Random Forest model revealed the relative contribution of each feature to the predictions:
 
@@ -75,8 +89,20 @@ Analysis of the feature importances from the tuned Random Forest model revealed 
 
 This confirms that smoking status is the primary driver of medical costs in this dataset, followed by BMI and age.
 
-## Conclusion and Insights
+## Results Summary
+1. The best performing model was Random Forest with tuned hyperparameters - `max_depth`=10, `min_samples_leaf`=4, `min_samples_split`=2 and `n_estimators`=100.
+2. The most important feature was `smoker` followed by `bmi` and `age`
+
+### Conclusion and Insights
 
 The analysis highlights that **smoking status, BMI, and age** are the most significant factors influencing medical insurance charges. While sex, number of children, and region show statistically significant relationships with charges, their impact is considerably less compared to smoking, BMI, and age in the developed model.
 
 The tuned Random Forest Regressor model provides a robust tool for predicting medical costs, with an average absolute error of approximately 2428 USD on unseen data. These findings can be valuable for understanding risk factors and potentially informing insurance pricing and health intervention strategies. Further analysis could explore interaction effects in more detail and potentially investigate the unexplained variance in the middle charge band.
+
+## Limitations
+Though the analysis was quite comprehensive it only analyzed some of the potential models and the number of features was very limited.
+
+## Next Steps
+1. To improve the model it is recommended to include more features that may drive medical charges - such as clinical diagnosis, sociodemographic status (income), medical insurance etc.
+2. Another improvement to the model can be provided by more records to process.
+3. It could be beneficial to examine other models to see if the provide better predictions with smaller loss functions
